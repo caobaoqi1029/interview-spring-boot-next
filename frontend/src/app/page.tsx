@@ -1,16 +1,9 @@
-import styles from "./page.module.css";
-import { Button } from "antd";
-import { listMyQuestionBankVoByPageUsingPost } from "@/api/questionBankController";
+import "./index.css";
 
-export default function Home() {
-    listMyQuestionBankVoByPageUsingPost({}).then((res) => {
-        console.log(res);
-    });
-    return (
-        <main className={styles.main}>
-            <div className={styles.description}>
-                <Button type={"primary"}>Home</Button>
-            </div>
-        </main>
-    );
+/**
+ * 主页
+ * @constructor
+ */
+export default function HomePage() {
+    return <div id="homePage">主页</div>;
 }

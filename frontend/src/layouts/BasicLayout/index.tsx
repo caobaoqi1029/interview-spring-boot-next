@@ -3,13 +3,20 @@ import { GithubFilled, LogoutOutlined, SearchOutlined } from "@ant-design/icons"
 import { ProLayout } from "@ant-design/pro-components";
 import { Dropdown, Input } from "antd";
 import React from "react";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
-import "./index.css";
 import { menus } from "@/config/menu";
+import { useSelector } from "react-redux";
+import { RootState } from "@/stores";
+import getAccessibleMenus from "@/access/menuAccess";
+import "./index.css";
 
+/**
+ * 搜索条
+ * @constructor
+ */
 const SearchInput = () => {
     return (
         <div
@@ -42,8 +49,16 @@ interface Props {
     children: React.ReactNode;
 }
 
+/**
+ * 全局通用布局
+ * @param children
+ * @constructor
+ */
 export default function BasicLayout({ children }: Props) {
     const pathname = usePathname();
+    // 当前登录用户
+    const loginUser = useSelector((state: RootState) => state.loginUser);
+
     return (
         <div
             id="basicLayout"
@@ -53,16 +68,16 @@ export default function BasicLayout({ children }: Props) {
             }}
         >
             <ProLayout
-                layout={"top"}
-                title={"鸡你太美 KunFC"}
-                logo={<Image src={"/next.svg"} height={32} width={32} alt={"网站图标"} />}
+                title="鸡你太美 KunFC"
+                layout="top"
+                logo={<Image src="/next.svg" height={32} width={32} alt="cxk" />}
                 location={{
                     pathname,
                 }}
                 avatarProps={{
-                    src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+                    src: loginUser.userAvatar || "/assets/logo.png",
                     size: "small",
-                    title: "七妮妮",
+                    title: loginUser.userName || "ikun",
                     render: (props, dom) => {
                         return (
                             <Dropdown
@@ -83,7 +98,12 @@ export default function BasicLayout({ children }: Props) {
                 }}
                 actionsRender={(props) => {
                     if (props.isMobile) return [];
-                    return [<SearchInput key="SearchInput" />, <GithubFilled key="GithubFilled" />];
+                    return [
+                        <SearchInput key="search" />,
+                        <a key="github" href="https://github.com/caobaoqi1029" target="_blank">
+                            <GithubFilled key="GithubFilled" />
+                        </a>,
+                    ];
                 }}
                 headerTitleRender={(logo, title, _) => {
                     return (
@@ -93,13 +113,16 @@ export default function BasicLayout({ children }: Props) {
                         </a>
                     );
                 }}
+                // 渲染底部栏
                 footerRender={() => {
                     return <GlobalFooter />;
                 }}
                 onMenuHeaderClick={(e) => console.log(e)}
+                // 定义有哪些菜单
                 menuDataRender={() => {
-                    return menus;
+                    return getAccessibleMenus(loginUser, menus);
                 }}
+                // 定义了菜单项如何渲染
                 menuItemRender={(item, dom) => (
                     <Link href={item.path || "/"} target={item.target}>
                         {dom}

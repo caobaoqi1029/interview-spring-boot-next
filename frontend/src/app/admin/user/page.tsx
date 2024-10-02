@@ -4,5 +4,5 @@ import "./index.css";
  * @constructor
  */
 export default function HomePage() {
-    return <div id="homePage">Questions</div>;
+    return <div id="homePage">主页</div>;
 }
