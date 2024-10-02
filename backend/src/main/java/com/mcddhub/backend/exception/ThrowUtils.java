@@ -1,7 +1,6 @@
-package com.mcddhub.backend.utils;
+package com.mcddhub.backend.exception;
 
 import com.mcddhub.backend.common.ErrorCode;
-import com.mcddhub.backend.exception.BusinessException;
 
 /**
  * ThrowUtils

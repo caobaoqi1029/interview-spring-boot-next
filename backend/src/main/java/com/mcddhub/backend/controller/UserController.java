@@ -14,7 +14,7 @@ import com.mcddhub.backend.model.entity.User;
 import com.mcddhub.backend.model.vo.LoginUserVO;
 import com.mcddhub.backend.model.vo.UserVO;
 import com.mcddhub.backend.service.UserService;
-import com.mcddhub.backend.utils.ThrowUtils;
+import com.mcddhub.backend.exception.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
