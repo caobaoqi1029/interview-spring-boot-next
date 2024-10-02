@@ -1,9 +1,8 @@
-package com.mcddhub.backend.handler;
+package com.mcddhub.backend.exception;
 
 import com.mcddhub.backend.common.BaseResponse;
 import com.mcddhub.backend.common.ErrorCode;
 import com.mcddhub.backend.common.ResultUtils;
-import com.mcddhub.backend.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

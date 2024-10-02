@@ -37,14 +37,15 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class QuestionBankController {
 
-    @Resource
-    private QuestionBankService questionBankService;
+    private final QuestionBankService questionBankService;
+    private final QuestionService questionService;
+    private final UserService userService;
 
-    @Resource
-    private QuestionService questionService;
-
-    @Resource
-    private UserService userService;
+    public QuestionBankController(QuestionBankService questionBankService, QuestionService questionService, UserService userService) {
+        this.questionBankService = questionBankService;
+        this.questionService = questionService;
+        this.userService = userService;
+    }
 
     // region 增删改查
 

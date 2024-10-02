@@ -1,6 +1,7 @@
 package com.mcddhub.backend.exception;
 
 import com.mcddhub.backend.common.ErrorCode;
+import lombok.Getter;
 
 /**
  * BusinessException
@@ -9,6 +10,7 @@ import com.mcddhub.backend.common.ErrorCode;
  * @author: caobaoqi1029
  * @date: 2024/10/1 12:55
  */
+@Getter
 public class BusinessException extends RuntimeException {
 
     /**
@@ -31,8 +33,5 @@ public class BusinessException extends RuntimeException {
         this.code = errorCode.getCode();
     }
 
-    public int getCode() {
-        return code;
-    }
 }
 

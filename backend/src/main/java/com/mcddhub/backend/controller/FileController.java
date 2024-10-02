@@ -36,11 +36,13 @@ import java.util.Arrays;
 @Slf4j
 public class FileController {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
+    private final CosManager cosManager;
 
-    @Resource
-    private CosManager cosManager;
+    public FileController(UserService userService, CosManager cosManager) {
+        this.userService = userService;
+        this.cosManager = cosManager;
+    }
 
     /**
      * 文件上传

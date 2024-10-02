@@ -9,12 +9,12 @@ import com.mcddhub.backend.common.ResultUtils;
 import com.mcddhub.backend.config.WxOpenConfig;
 import com.mcddhub.backend.constant.UserConstant;
 import com.mcddhub.backend.exception.BusinessException;
+import com.mcddhub.backend.exception.ThrowUtils;
 import com.mcddhub.backend.model.dto.user.*;
 import com.mcddhub.backend.model.entity.User;
 import com.mcddhub.backend.model.vo.LoginUserVO;
 import com.mcddhub.backend.model.vo.UserVO;
 import com.mcddhub.backend.service.UserService;
-import com.mcddhub.backend.exception.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
@@ -24,7 +24,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -43,11 +42,14 @@ import static com.mcddhub.backend.service.impl.UserServiceImpl.SALT;
 @Slf4j
 public class UserController {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
+    private final WxOpenConfig wxOpenConfig;
 
-    @Resource
-    private WxOpenConfig wxOpenConfig;
+    public UserController(UserService userService, WxOpenConfig wxOpenConfig) {
+        this.userService = userService;
+        this.wxOpenConfig = wxOpenConfig;
+    }
+
 
     // region 登录相关
 

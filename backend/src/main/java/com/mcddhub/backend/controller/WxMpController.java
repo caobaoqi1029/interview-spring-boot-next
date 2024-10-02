@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,11 +34,13 @@ import java.util.Collections;
 @Slf4j
 public class WxMpController {
 
-    @Resource
-    private WxMpService wxMpService;
+    private final WxMpService wxMpService;
+    private final WxMpMessageRouter router;
 
-    @Resource
-    private WxMpMessageRouter router;
+    public WxMpController(WxMpService wxMpService, WxMpMessageRouter router) {
+        this.wxMpService = wxMpService;
+        this.router = router;
+    }
 
     @PostMapping("/")
     public void receiveMessage(HttpServletRequest request, HttpServletResponse response)

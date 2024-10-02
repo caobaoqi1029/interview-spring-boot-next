@@ -10,8 +10,6 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.Resource;
-
 /**
  * WxMpMsgRouter
  *
@@ -22,17 +20,18 @@ import javax.annotation.Resource;
 @Configuration
 public class WxMpMsgRouter {
 
-    @Resource
-    private WxMpService wxMpService;
+    private final WxMpService wxMpService;
+    private final EventHandler eventHandler;
+    private final MessageHandler messageHandler;
+    private final SubscribeHandler subscribeHandler;
 
-    @Resource
-    private EventHandler eventHandler;
+    public WxMpMsgRouter(WxMpService wxMpService, EventHandler eventHandler, MessageHandler messageHandler, SubscribeHandler subscribeHandler) {
+        this.wxMpService = wxMpService;
+        this.eventHandler = eventHandler;
+        this.messageHandler = messageHandler;
+        this.subscribeHandler = subscribeHandler;
+    }
 
-    @Resource
-    private MessageHandler messageHandler;
-
-    @Resource
-    private SubscribeHandler subscribeHandler;
 
     @Bean
     public WxMpMessageRouter getWxMsgRouter() {

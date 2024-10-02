@@ -35,8 +35,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQuestionMapper, QuestionBankQuestion> implements QuestionBankQuestionService {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
+
+    public QuestionBankQuestionServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * 校验数据
