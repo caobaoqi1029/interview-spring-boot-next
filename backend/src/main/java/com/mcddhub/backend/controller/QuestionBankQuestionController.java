@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 题库接口
+ * 题库题目接口
  */
 @RestController
 @RequestMapping("/questionBankQuestion")
@@ -45,7 +45,7 @@ public class QuestionBankQuestionController {
     // region 增删改查
 
     /**
-     * 创建题库
+     * 创建题库题目
      *
      * @param questionBankQuestionAddRequest
      * @param request
@@ -71,7 +71,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 删除题库
+     * 删除题库题目
      *
      * @param deleteRequest
      * @param request
@@ -98,7 +98,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 更新题库（仅管理员可用）
+     * 更新题库题目（仅管理员可用）
      *
      * @param questionBankQuestionUpdateRequest
      * @return
@@ -125,7 +125,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 根据 id 获取题库（封装类）
+     * 根据 id 获取题库题目（封装类）
      *
      * @param id
      * @return
@@ -141,7 +141,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 分页获取题库列表（仅管理员可用）
+     * 分页获取题库题目列表（仅管理员可用）
      *
      * @param questionBankQuestionQueryRequest
      * @return
@@ -158,7 +158,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 分页获取题库列表（封装类）
+     * 分页获取题库题目列表（封装类）
      *
      * @param questionBankQuestionQueryRequest
      * @param request
@@ -179,7 +179,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 分页获取当前登录用户创建的题库列表
+     * 分页获取当前登录用户创建的题库题目列表
      *
      * @param questionBankQuestionQueryRequest
      * @param request
@@ -204,7 +204,7 @@ public class QuestionBankQuestionController {
     }
 
     /**
-     * 移除题库题目关联（仅管理员可用）
+     * 移除题库题目题目关联（仅管理员可用）
      *
      * @param questionBankQuestionRemoveRequest
      * @return

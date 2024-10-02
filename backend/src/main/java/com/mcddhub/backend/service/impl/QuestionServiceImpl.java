@@ -25,7 +25,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 题库服务实现
+ * 题目服务实现
  */
 @Service
 @Slf4j
@@ -50,7 +49,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     /**
      * 校验数据
      *
-     * @param question
+     * @param question Question
      * @param add      对创建的数据进行校验
      */
     @Override
@@ -73,8 +72,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     /**
      * 获取查询条件
      *
-     * @param questionQueryRequest
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @return Question
      */
     @Override
     public QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest) {
@@ -119,11 +118,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     /**
-     * 获取题库封装
+     * 获取题目封装
      *
-     * @param question
-     * @param request
-     * @return
+     * @param question Question
+     * @param request HttpServletRequest
+     * @return QuestionVO
      */
     @Override
     public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
@@ -146,11 +145,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     /**
-     * 分页获取题库封装
+     * 分页获取题目封装
      *
-     * @param questionPage
-     * @param request
-     * @return
+     * @param questionPage  Page<Question>
+     * @param request HttpServletRequest
+     * @return QuestionVO
      */
     @Override
     public Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request) {
@@ -188,18 +187,18 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     /**
      * 分页获取题目列表
      *
-     * @param questionQueryRequest
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @return Question
      */
     public Page<Question> listQuestionByPage(QuestionQueryRequest questionQueryRequest) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 题目表的查询条件
         QueryWrapper<Question> queryWrapper = this.getQueryWrapper(questionQueryRequest);
-        // 根据题库查询题目列表接口
+        // 根据题目查询题目列表接口
         Long questionBankId = questionQueryRequest.getQuestionBankId();
         if (questionBankId != null) {
-            // 查询题库内的题目 id
+            // 查询题目内的题目 id
             LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
                     .select(QuestionBankQuestion::getQuestionId)
                     .eq(QuestionBankQuestion::getQuestionBankId, questionBankId);
@@ -212,7 +211,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                 // 复用原有题目表的查询条件
                 queryWrapper.in("id", questionIdSet);
             } else {
-                // 题库为空，则返回空列表
+                // 题目为空，则返回空列表
                 return new Page<>(current, size, 0);
             }
         }

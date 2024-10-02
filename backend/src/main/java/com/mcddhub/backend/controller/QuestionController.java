@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 题库接口
+ * 题目接口
  */
 @RestController
 @RequestMapping("/question")
@@ -40,14 +40,12 @@ public class QuestionController {
         this.userService = userService;
     }
 
-    // region 增删改查
-
     /**
-     * 创建题库
+     * 创建题目
      *
-     * @param questionAddRequest
-     * @param request
-     * @return
+     * @param questionAddRequest QuestionAddRequest
+     * @param request            HttpServletRequest
+     * @return Long
      */
     @PostMapping("/add")
     public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpServletRequest request) {
@@ -69,11 +67,11 @@ public class QuestionController {
     }
 
     /**
-     * 删除题库
+     * 删除题目
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest DeleteRequest
+     * @param request       HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -96,10 +94,10 @@ public class QuestionController {
     }
 
     /**
-     * 更新题库（仅管理员可用）
+     * 更新题目（仅管理员可用）
      *
-     * @param questionUpdateRequest
-     * @return
+     * @param questionUpdateRequest QuestionUpdateRequest
+     * @return Boolean
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -123,10 +121,10 @@ public class QuestionController {
     }
 
     /**
-     * 根据 id 获取题库（封装类）
+     * 根据 id 获取题目（封装类）
      *
-     * @param id
-     * @return
+     * @param id long
+     * @return QuestionVO
      */
     @GetMapping("/get/vo")
     public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
@@ -139,10 +137,10 @@ public class QuestionController {
     }
 
     /**
-     * 分页获取题库列表（仅管理员可用）
+     * 分页获取题目列表（仅管理员可用）
      *
-     * @param questionQueryRequest
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @return <Page<Question>>
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -156,11 +154,11 @@ public class QuestionController {
     }
 
     /**
-     * 分页获取题库列表（封装类）
+     * 分页获取题目列表（封装类）
      *
-     * @param questionQueryRequest
-     * @param request
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @param request              HttpServletRequest
+     * @return Page<QuestionVO>
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
@@ -177,11 +175,11 @@ public class QuestionController {
     }
 
     /**
-     * 分页获取当前登录用户创建的题库列表
+     * 分页获取当前登录用户创建的题目列表
      *
-     * @param questionQueryRequest
-     * @param request
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @param request              HttpServletRequest
+     * @return Page<QuestionVO>
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
@@ -202,11 +200,11 @@ public class QuestionController {
     }
 
     /**
-     * 编辑题库（给用户使用）
+     * 编辑题目（给用户使用）
      *
-     * @param questionEditRequest
-     * @param request
-     * @return
+     * @param questionEditRequest questionEditRequest
+     * @param request             HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/edit")
     public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {

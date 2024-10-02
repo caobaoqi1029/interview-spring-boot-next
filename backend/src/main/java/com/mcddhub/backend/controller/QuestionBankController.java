@@ -46,14 +46,12 @@ public class QuestionBankController {
         this.userService = userService;
     }
 
-    // region 增删改查
-
     /**
      * 创建题库
      *
-     * @param questionBankAddRequest
-     * @param request
-     * @return
+     * @param questionBankAddRequest QuestionBankAddRequest
+     * @param request HttpServletRequest
+     * @return Long
      */
     @PostMapping("/add")
     public BaseResponse<Long> addQuestionBank(@RequestBody QuestionBankAddRequest questionBankAddRequest, HttpServletRequest request) {
@@ -77,9 +75,9 @@ public class QuestionBankController {
     /**
      * 删除题库
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest DeleteRequest
+     * @param request HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteQuestionBank(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -104,8 +102,8 @@ public class QuestionBankController {
     /**
      * 更新题库（仅管理员可用）
      *
-     * @param questionBankUpdateRequest
-     * @return
+     * @param questionBankUpdateRequest QuestionBankUpdateRequest
+     * @return Boolean
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -130,6 +128,9 @@ public class QuestionBankController {
 
     /**
      * 根据 id 获取题库（封装类）
+     * @param questionBankQueryRequest QuestionBankQueryRequest
+     * @param request HttpServletRequest
+     * @return QuestionBankVO
      */
     @GetMapping("/get/vo")
     public BaseResponse<QuestionBankVO> getQuestionBankVOById(QuestionBankQueryRequest questionBankQueryRequest, HttpServletRequest request) {
@@ -153,11 +154,6 @@ public class QuestionBankController {
             Page<QuestionVO> questionVOPage = questionService.getQuestionVOPage(questionPage, request);
             questionBankVO.setQuestionPage(questionVOPage);
         }
-
-        // todo 取消注释开启 HotKey（须确保 HotKey 依赖被打进 jar 包）
-//        // 设置本地缓存（如果不是热 key，这个方法不会设置缓存）
-//        JdHotKeyStore.smartSet(key, questionBankVO);
-
         // 获取封装类
         return ResultUtils.success(questionBankVO);
     }
@@ -165,8 +161,8 @@ public class QuestionBankController {
     /**
      * 分页获取题库列表（仅管理员可用）
      *
-     * @param questionBankQueryRequest
-     * @return
+     * @param questionBankQueryRequest QuestionBankQueryRequest
+     * @return Page<QuestionBank>
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -182,9 +178,9 @@ public class QuestionBankController {
     /**
      * 分页获取题库列表（封装类）
      *
-     * @param questionBankQueryRequest
-     * @param request
-     * @return
+     * @param questionBankQueryRequest QuestionBankQueryRequest
+     * @param request HttpServletRequest
+     * @return Page<QuestionBankVO>
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionBankVO>> listQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
@@ -203,9 +199,9 @@ public class QuestionBankController {
     /**
      * 分页获取当前登录用户创建的题库列表
      *
-     * @param questionBankQueryRequest
-     * @param request
-     * @return
+     * @param questionBankQueryRequest QuestionBankQueryRequest
+     * @param request HttpServletRequest
+     * @return Page<QuestionBankVO>
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionBankVO>> listMyQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
@@ -228,9 +224,9 @@ public class QuestionBankController {
     /**
      * 编辑题库（给用户使用）
      *
-     * @param questionBankEditRequest
-     * @param request
-     * @return
+     * @param questionBankEditRequest QuestionBankEditRequest
+     * @param request HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/edit")
     public BaseResponse<Boolean> editQuestionBank(@RequestBody QuestionBankEditRequest questionBankEditRequest, HttpServletRequest request) {
@@ -256,6 +252,4 @@ public class QuestionBankController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
-
-    // endregion
 }

@@ -10,7 +10,7 @@ import com.mcddhub.backend.model.vo.QuestionBankQuestionVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 题库服务
+ * 题库题目服务
  *
  */
 public interface QuestionBankQuestionService extends IService<QuestionBankQuestion> {
@@ -18,7 +18,7 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
     /**
      * 校验数据
      *
-     * @param questionBankQuestion
+     * @param questionBankQuestion QuestionBankQuestion
      * @param add 对创建的数据进行校验
      */
     void validQuestionBankQuestion(QuestionBankQuestion questionBankQuestion, boolean add);
@@ -26,26 +26,26 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
     /**
      * 获取查询条件
      *
-     * @param questionBankQuestionQueryRequest
-     * @return
+     * @param questionBankQuestionQueryRequest QuestionBankQuestionQueryRequest
+     * @return QuestionBankQuestion
      */
     QueryWrapper<QuestionBankQuestion> getQueryWrapper(QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest);
     
     /**
-     * 获取题库封装
+     * 获取题库题目封装
      *
-     * @param questionBankQuestion
-     * @param request
-     * @return
+     * @param questionBankQuestion QuestionBankQuestion
+     * @param request HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     QuestionBankQuestionVO getQuestionBankQuestionVO(QuestionBankQuestion questionBankQuestion, HttpServletRequest request);
 
     /**
-     * 分页获取题库封装
+     * 分页获取题库题目封装
      *
-     * @param questionBankQuestionPage
-     * @param request
-     * @return
+     * @param questionBankQuestionPage  Page<QuestionBankQuestion>
+     * @param request HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     Page<QuestionBankQuestionVO> getQuestionBankQuestionVOPage(Page<QuestionBankQuestion> questionBankQuestionPage, HttpServletRequest request);
 }

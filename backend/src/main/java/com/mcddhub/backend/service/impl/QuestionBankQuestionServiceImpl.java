@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 题库服务实现
- *
+ * 题库题目服务实现
  */
 @Service
 @Slf4j
@@ -44,8 +43,8 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     /**
      * 校验数据
      *
-     * @param questionBankQuestion
-     * @param add      对创建的数据进行校验
+     * @param questionBankQuestion QuestionBankQuestion
+     * @param add                  对创建的数据进行校验
      */
     @Override
     public void validQuestionBankQuestion(QuestionBankQuestion questionBankQuestion, boolean add) {
@@ -56,8 +55,8 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     /**
      * 获取查询条件
      *
-     * @param questionBankQuestionQueryRequest
-     * @return
+     * @param questionBankQuestionQueryRequest QuestionBankQuestionQueryRequest
+     * @return QuestionBankQuestion
      */
     @Override
     public QueryWrapper<QuestionBankQuestion> getQueryWrapper(QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest) {
@@ -89,11 +88,11 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     }
 
     /**
-     * 获取题库封装
+     * 获取题库题目封装
      *
-     * @param questionBankQuestion
-     * @param request
-     * @return
+     * @param questionBankQuestion QuestionBankQuestion
+     * @param request              HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     @Override
     public QuestionBankQuestionVO getQuestionBankQuestionVO(QuestionBankQuestion questionBankQuestion, HttpServletRequest request) {
@@ -116,11 +115,11 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     }
 
     /**
-     * 分页获取题库封装
+     * 分页获取题库题目封装
      *
-     * @param questionBankQuestionPage
-     * @param request
-     * @return
+     * @param questionBankQuestionPage Page<QuestionBankQuestion>
+     * @param request                  HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     @Override
     public Page<QuestionBankQuestionVO> getQuestionBankQuestionVOPage(Page<QuestionBankQuestion> questionBankQuestionPage, HttpServletRequest request) {

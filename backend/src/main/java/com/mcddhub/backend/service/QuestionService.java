@@ -10,7 +10,7 @@ import com.mcddhub.backend.model.vo.QuestionVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 题库服务
+ * 题目服务
  *
  */
 public interface QuestionService extends IService<Question> {
@@ -18,7 +18,7 @@ public interface QuestionService extends IService<Question> {
     /**
      * 校验数据
      *
-     * @param question
+     * @param question Question
      * @param add 对创建的数据进行校验
      */
     void validQuestion(Question question, boolean add);
@@ -26,34 +26,34 @@ public interface QuestionService extends IService<Question> {
     /**
      * 获取查询条件
      *
-     * @param questionQueryRequest
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @return Question
      */
     QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest);
     
     /**
-     * 获取题库封装
+     * 获取题目封装
      *
-     * @param question
-     * @param request
-     * @return
+     * @param question HttpServletRequest
+     * @param request HttpServletRequest
+     * @return QuestionVO
      */
     QuestionVO getQuestionVO(Question question, HttpServletRequest request);
 
     /**
-     * 分页获取题库封装
+     * 分页获取题目封装
      *
-     * @param questionPage
-     * @param request
-     * @return
+     * @param questionPage Page<Question>
+     * @param request HttpServletRequest
+     * @return QuestionVO
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
 
     /**
      * 分页获取题目列表
      *
-     * @param questionQueryRequest
-     * @return
+     * @param questionQueryRequest QuestionQueryRequest
+     * @return Question
      */
     Page<Question> listQuestionByPage(QuestionQueryRequest questionQueryRequest);
 }

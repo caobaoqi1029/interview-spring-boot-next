@@ -47,7 +47,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     /**
      * 校验数据
      *
-     * @param questionBank
+     * @param questionBank QuestionBank
      * @param add      对创建的数据进行校验
      */
     @Override
@@ -70,8 +70,8 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     /**
      * 获取查询条件
      *
-     * @param questionBankQueryRequest
-     * @return
+     * @param questionBankQueryRequest QuestionBankQueryRequest
+     * @return QuestionBank
      */
     @Override
     public QueryWrapper<QuestionBank> getQueryWrapper(QuestionBankQueryRequest questionBankQueryRequest) {
@@ -109,9 +109,9 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     /**
      * 获取题库封装
      *
-     * @param questionBank
-     * @param request
-     * @return
+     * @param questionBank QuestionBank
+     * @param request HttpServletRequest
+     * @return QuestionBankVO
      */
     @Override
     public QuestionBankVO getQuestionBankVO(QuestionBank questionBank, HttpServletRequest request) {
@@ -136,9 +136,9 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
     /**
      * 分页获取题库封装
      *
-     * @param questionBankPage
-     * @param request
-     * @return
+     * @param questionBankPage QuestionBank
+     * @param request HttpServletRequest
+     * @return QuestionBankVO
      */
     @Override
     public Page<QuestionBankVO> getQuestionBankVOPage(Page<QuestionBank> questionBankPage, HttpServletRequest request) {
