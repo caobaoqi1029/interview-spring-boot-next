@@ -2,6 +2,7 @@ package com.mcddhub.backend.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mcddhub.backend.common.ErrorCode;
 import com.mcddhub.backend.constant.CommonConstant;
@@ -16,6 +17,7 @@ import com.mcddhub.backend.service.UserService;
 import com.mcddhub.backend.utils.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -42,13 +44,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 盐值，混淆密码
      */
-    public static final String SALT = "yupi";
+    public static final String SALT = "mcddhub";
+
+    @Override
+    public User findByUserAccount(String userAccount) {
+        return this.getOne(Wrappers.lambdaQuery(User.class).eq(User::getUserAccount, userAccount));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return this.getOne(Wrappers.lambdaQuery(User.class).eq(User::getEmail, email));
+    }
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数不能为空");
         }
         if (userAccount.length() < 4) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
@@ -62,10 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         synchronized (userAccount.intern()) {
             // 账户不能重复
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("userAccount", userAccount);
-            long count = this.baseMapper.selectCount(queryWrapper);
-            if (count > 0) {
+            if (ObjectUtils.allNotNull(this.findByUserAccount(userAccount))) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
             // 2. 加密
@@ -86,21 +95,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数不能为空");
         }
-        if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
-        }
-        if (userPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
+        if (userAccount.length() < 4 || (userPassword.length() < 8)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号或密码错误");
         }
         // 2. 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 查询用户是否存在
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAccount", userAccount);
-        queryWrapper.eq("userPassword", encryptPassword);
-        User user = this.baseMapper.selectOne(queryWrapper);
+        User user = this.baseMapper.selectOne(Wrappers.lambdaQuery(User.class)
+            .eq(User::getUserAccount, userAccount)
+            .eq(User::getUserPassword, encryptPassword));
         // 用户不存在
         if (user == null) {
             log.info("user login failed, userAccount cannot match userPassword");
@@ -118,9 +123,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 单机锁
         synchronized (unionId.intern()) {
             // 查询用户是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("unionId", unionId);
-            User user = this.getOne(queryWrapper);
+            User user = this.getOne(Wrappers.lambdaQuery(User.class)
+                .eq(User::getUnionId, unionId));
             // 被封号，禁止登录
             if (user != null && UserRoleEnum.BAN.getValue().equals(user.getUserRole())) {
                 throw new BusinessException(ErrorCode.FORBIDDEN_ERROR, "该用户已被封，禁止登录");
@@ -146,8 +150,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 获取当前登录用户
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return User
      */
     @Override
     public User getLoginUser(HttpServletRequest request) {
@@ -169,8 +173,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 获取当前登录用户（允许未登录）
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return User
      */
     @Override
     public User getLoginUserPermitNull(HttpServletRequest request) {
@@ -188,8 +192,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 是否为管理员
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return boolean
      */
     @Override
     public boolean isAdmin(HttpServletRequest request) {
@@ -201,13 +205,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean isAdmin(User user) {
-        return user != null && UserRoleEnum.ADMIN.getValue().equals(user.getUserRole());
+        return user == null || !UserRoleEnum.ADMIN.getValue().equals(user.getUserRole());
     }
 
     /**
      * 用户注销
      *
-     * @param request
+     * @param request HttpServletRequest
      */
     @Override
     public boolean userLogout(HttpServletRequest request) {
@@ -267,8 +271,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.eq(StringUtils.isNotBlank(userRole), "userRole", userRole);
         queryWrapper.like(StringUtils.isNotBlank(userProfile), "userProfile", userProfile);
         queryWrapper.like(StringUtils.isNotBlank(userName), "userName", userName);
-        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
-            sortField);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
     }
 }

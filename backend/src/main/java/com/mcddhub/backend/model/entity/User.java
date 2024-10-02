@@ -38,12 +38,12 @@ public class User implements Serializable {
     private String userPassword;
 
     /**
-     * 开放平台id
+     * 开放平台 id
      */
     private String unionId;
 
     /**
-     * 公众号openId
+     * 公众号 openId
      */
     private String mpOpenId;
 

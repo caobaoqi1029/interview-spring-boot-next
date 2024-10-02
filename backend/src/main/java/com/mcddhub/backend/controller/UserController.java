@@ -50,14 +50,11 @@ public class UserController {
         this.wxOpenConfig = wxOpenConfig;
     }
 
-
-    // region 登录相关
-
     /**
      * 用户注册
      *
-     * @param userRegisterRequest
-     * @return
+     * @param userRegisterRequest UserRegisterRequest
+     * @return Long
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
@@ -77,9 +74,9 @@ public class UserController {
     /**
      * 用户登录
      *
-     * @param userLoginRequest
-     * @param request
-     * @return
+     * @param userLoginRequest UserLoginRequest
+     * @param request          HttpServletRequest
+     * @return LoginUserVO
      */
     @PostMapping("/login")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -97,6 +94,11 @@ public class UserController {
 
     /**
      * 用户登录（微信开放平台）
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param code     String
+     * @return LoginUserVO
      */
     @GetMapping("/login/wx_open")
     public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
@@ -121,8 +123,8 @@ public class UserController {
     /**
      * 用户注销
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
@@ -136,8 +138,8 @@ public class UserController {
     /**
      * 获取当前登录用户
      *
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return LoginUserVO
      */
     @GetMapping("/get/login")
     public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
@@ -152,9 +154,9 @@ public class UserController {
     /**
      * 创建用户
      *
-     * @param userAddRequest
-     * @param request
-     * @return
+     * @param userAddRequest UserAddRequest
+     * @param request        HttpServletRequest
+     * @return Long
      */
     @PostMapping("/add")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -176,9 +178,9 @@ public class UserController {
     /**
      * 删除用户
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest DeleteRequest
+     * @param request       HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -193,9 +195,9 @@ public class UserController {
     /**
      * 更新用户
      *
-     * @param userUpdateRequest
-     * @param request
-     * @return
+     * @param userUpdateRequest UserUpdateRequest
+     * @param request           HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -214,9 +216,9 @@ public class UserController {
     /**
      * 根据 id 获取用户（仅管理员）
      *
-     * @param id
-     * @param request
-     * @return
+     * @param id      long
+     * @param request HttpServletRequest
+     * @return User
      */
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -232,9 +234,9 @@ public class UserController {
     /**
      * 根据 id 获取包装类
      *
-     * @param id
-     * @param request
-     * @return
+     * @param id      long
+     * @param request HttpServletRequest
+     * @return UserVO
      */
     @GetMapping("/get/vo")
     public BaseResponse<UserVO> getUserVOById(long id, HttpServletRequest request) {
@@ -246,9 +248,9 @@ public class UserController {
     /**
      * 分页获取用户列表（仅管理员）
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
+     * @param userQueryRequest UserQueryRequest
+     * @param request          HttpServletRequest
+     * @return Page<User>
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -264,9 +266,9 @@ public class UserController {
     /**
      * 分页获取用户封装列表
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
+     * @param userQueryRequest UserQueryRequest
+     * @param request          HttpServletRequest
+     * @return Page<UserVO>
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
@@ -291,9 +293,9 @@ public class UserController {
     /**
      * 更新个人信息
      *
-     * @param userUpdateMyRequest
-     * @param request
-     * @return
+     * @param userUpdateMyRequest UserUpdateMyRequest
+     * @param request             HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
