@@ -42,14 +42,12 @@ public class QuestionBankQuestionController {
         this.userService = userService;
     }
 
-    // region 增删改查
-
     /**
      * 创建题库题目
      *
-     * @param questionBankQuestionAddRequest
-     * @param request
-     * @return
+     * @param questionBankQuestionAddRequest QuestionBankQuestionAddRequest
+     * @param request                        HttpServletRequest
+     * @return Long
      */
     @PostMapping("/add")
     public BaseResponse<Long> addQuestionBankQuestion(@RequestBody QuestionBankQuestionAddRequest questionBankQuestionAddRequest, HttpServletRequest request) {
@@ -73,9 +71,9 @@ public class QuestionBankQuestionController {
     /**
      * 删除题库题目
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest DeleteRequest
+     * @param request       HttpServletRequest
+     * @return Boolean
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteQuestionBankQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -100,8 +98,8 @@ public class QuestionBankQuestionController {
     /**
      * 更新题库题目（仅管理员可用）
      *
-     * @param questionBankQuestionUpdateRequest
-     * @return
+     * @param questionBankQuestionUpdateRequest QuestionBankQuestionUpdateRequest
+     * @return Boolean
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -127,8 +125,9 @@ public class QuestionBankQuestionController {
     /**
      * 根据 id 获取题库题目（封装类）
      *
-     * @param id
-     * @return
+     * @param id      long
+     * @param request HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     @GetMapping("/get/vo")
     public BaseResponse<QuestionBankQuestionVO> getQuestionBankQuestionVOById(long id, HttpServletRequest request) {
@@ -143,8 +142,8 @@ public class QuestionBankQuestionController {
     /**
      * 分页获取题库题目列表（仅管理员可用）
      *
-     * @param questionBankQuestionQueryRequest
-     * @return
+     * @param questionBankQuestionQueryRequest QuestionBankQuestionQueryRequest
+     * @return QuestionBankQuestion
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -160,9 +159,9 @@ public class QuestionBankQuestionController {
     /**
      * 分页获取题库题目列表（封装类）
      *
-     * @param questionBankQuestionQueryRequest
-     * @param request
-     * @return
+     * @param questionBankQuestionQueryRequest QuestionBankQuestionQueryRequest
+     * @param request                          HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionBankQuestionVO>> listQuestionBankQuestionVOByPage(@RequestBody QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest,
@@ -181,9 +180,9 @@ public class QuestionBankQuestionController {
     /**
      * 分页获取当前登录用户创建的题库题目列表
      *
-     * @param questionBankQuestionQueryRequest
-     * @param request
-     * @return
+     * @param questionBankQuestionQueryRequest QuestionBankQuestionQueryRequest
+     * @param request                          HttpServletRequest
+     * @return QuestionBankQuestionVO
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionBankQuestionVO>> listMyQuestionBankQuestionVOByPage(@RequestBody QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest,
@@ -206,8 +205,8 @@ public class QuestionBankQuestionController {
     /**
      * 移除题库题目题目关联（仅管理员可用）
      *
-     * @param questionBankQuestionRemoveRequest
-     * @return
+     * @param questionBankQuestionRemoveRequest QuestionBankQuestionRemoveRequest
+     * @return Boolean
      */
     @PostMapping("/remove")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
