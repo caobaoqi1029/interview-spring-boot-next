@@ -57,7 +57,7 @@ export default function BasicLayout({ children }: Props) {
         >
             <ProLayout
                 layout={"top"}
-                title={"鸡你太美 KFC"}
+                title={"鸡你太美 KunFC"}
                 logo={<Image src={"/next.svg"} height={32} width={32} alt={"网站图标"} />}
                 location={{
                     pathname,
