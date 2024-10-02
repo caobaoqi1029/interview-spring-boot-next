@@ -1,5 +1,7 @@
 package com.mcddhub.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mcddhub.backend.annotation.AuthCheck;
 import com.mcddhub.backend.common.BaseResponse;
@@ -10,8 +12,8 @@ import com.mcddhub.backend.constant.UserConstant;
 import com.mcddhub.backend.exception.BusinessException;
 import com.mcddhub.backend.exception.ThrowUtils;
 import com.mcddhub.backend.model.dto.questionBankQuestion.QuestionBankQuestionAddRequest;
-import com.mcddhub.backend.model.dto.questionBankQuestion.QuestionBankQuestionEditRequest;
 import com.mcddhub.backend.model.dto.questionBankQuestion.QuestionBankQuestionQueryRequest;
+import com.mcddhub.backend.model.dto.questionBankQuestion.QuestionBankQuestionRemoveRequest;
 import com.mcddhub.backend.model.dto.questionBankQuestion.QuestionBankQuestionUpdateRequest;
 import com.mcddhub.backend.model.entity.QuestionBankQuestion;
 import com.mcddhub.backend.model.entity.User;
@@ -27,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 题库接口
- *
  */
 @RestController
 @RequestMapping("/questionBankQuestion")
@@ -151,7 +152,7 @@ public class QuestionBankQuestionController {
         long size = questionBankQuestionQueryRequest.getPageSize();
         // 查询数据库
         Page<QuestionBankQuestion> questionBankQuestionPage = questionBankQuestionService.page(new Page<>(current, size),
-                questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
+            questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
         return ResultUtils.success(questionBankQuestionPage);
     }
 
@@ -164,14 +165,14 @@ public class QuestionBankQuestionController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionBankQuestionVO>> listQuestionBankQuestionVOByPage(@RequestBody QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest,
-                                                               HttpServletRequest request) {
+                                                                                       HttpServletRequest request) {
         long current = questionBankQuestionQueryRequest.getCurrent();
         long size = questionBankQuestionQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<QuestionBankQuestion> questionBankQuestionPage = questionBankQuestionService.page(new Page<>(current, size),
-                questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
+            questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
         // 获取封装类
         return ResultUtils.success(questionBankQuestionService.getQuestionBankQuestionVOPage(questionBankQuestionPage, request));
     }
@@ -185,7 +186,7 @@ public class QuestionBankQuestionController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionBankQuestionVO>> listMyQuestionBankQuestionVOByPage(@RequestBody QuestionBankQuestionQueryRequest questionBankQuestionQueryRequest,
-                                                                 HttpServletRequest request) {
+                                                                                         HttpServletRequest request) {
         ThrowUtils.throwIf(questionBankQuestionQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
@@ -196,42 +197,32 @@ public class QuestionBankQuestionController {
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<QuestionBankQuestion> questionBankQuestionPage = questionBankQuestionService.page(new Page<>(current, size),
-                questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
+            questionBankQuestionService.getQueryWrapper(questionBankQuestionQueryRequest));
         // 获取封装类
         return ResultUtils.success(questionBankQuestionService.getQuestionBankQuestionVOPage(questionBankQuestionPage, request));
     }
 
     /**
-     * 编辑题库（给用户使用）
+     * 移除题库题目关联（仅管理员可用）
      *
-     * @param questionBankQuestionEditRequest
-     * @param request
+     * @param questionBankQuestionRemoveRequest
      * @return
      */
-    @PostMapping("/edit")
-    public BaseResponse<Boolean> editQuestionBankQuestion(@RequestBody QuestionBankQuestionEditRequest questionBankQuestionEditRequest, HttpServletRequest request) {
-        if (questionBankQuestionEditRequest == null || questionBankQuestionEditRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        // todo 在此处将实体类和 DTO 进行转换
-        QuestionBankQuestion questionBankQuestion = new QuestionBankQuestion();
-        BeanUtils.copyProperties(questionBankQuestionEditRequest, questionBankQuestion);
-        // 数据校验
-        questionBankQuestionService.validQuestionBankQuestion(questionBankQuestion, false);
-        User loginUser = userService.getLoginUser(request);
-        // 判断是否存在
-        long id = questionBankQuestionEditRequest.getId();
-        QuestionBankQuestion oldQuestionBankQuestion = questionBankQuestionService.getById(id);
-        ThrowUtils.throwIf(oldQuestionBankQuestion == null, ErrorCode.NOT_FOUND_ERROR);
-        // 仅本人或管理员可编辑
-        if (!oldQuestionBankQuestion.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
-        // 操作数据库
-        boolean result = questionBankQuestionService.updateById(questionBankQuestion);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return ResultUtils.success(true);
+    @PostMapping("/remove")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> removeQuestionBankQuestion(
+        @RequestBody QuestionBankQuestionRemoveRequest questionBankQuestionRemoveRequest
+    ) {
+        // 参数校验
+        ThrowUtils.throwIf(questionBankQuestionRemoveRequest == null, ErrorCode.PARAMS_ERROR);
+        Long questionBankId = questionBankQuestionRemoveRequest.getQuestionBankId();
+        Long questionId = questionBankQuestionRemoveRequest.getQuestionId();
+        ThrowUtils.throwIf(questionBankId == null || questionId == null, ErrorCode.PARAMS_ERROR);
+        // 构造查询
+        LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
+            .eq(QuestionBankQuestion::getQuestionBankId, questionBankId)
+            .eq(QuestionBankQuestion::getQuestionId, questionId);
+        boolean result = questionBankQuestionService.remove(lambdaQueryWrapper);
+        return ResultUtils.success(result);
     }
-
-    // endregion
 }

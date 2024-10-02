@@ -9,14 +9,18 @@ import com.mcddhub.backend.common.ResultUtils;
 import com.mcddhub.backend.constant.UserConstant;
 import com.mcddhub.backend.exception.BusinessException;
 import com.mcddhub.backend.exception.ThrowUtils;
+import com.mcddhub.backend.model.dto.question.QuestionQueryRequest;
 import com.mcddhub.backend.model.dto.questionBank.QuestionBankAddRequest;
 import com.mcddhub.backend.model.dto.questionBank.QuestionBankEditRequest;
 import com.mcddhub.backend.model.dto.questionBank.QuestionBankQueryRequest;
 import com.mcddhub.backend.model.dto.questionBank.QuestionBankUpdateRequest;
+import com.mcddhub.backend.model.entity.Question;
 import com.mcddhub.backend.model.entity.QuestionBank;
 import com.mcddhub.backend.model.entity.User;
 import com.mcddhub.backend.model.vo.QuestionBankVO;
+import com.mcddhub.backend.model.vo.QuestionVO;
 import com.mcddhub.backend.service.QuestionBankService;
+import com.mcddhub.backend.service.QuestionService;
 import com.mcddhub.backend.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * 题库接口
- *
  */
 @RestController
 @RequestMapping("/questionBank")
@@ -36,6 +39,9 @@ public class QuestionBankController {
 
     @Resource
     private QuestionBankService questionBankService;
+
+    @Resource
+    private QuestionService questionService;
 
     @Resource
     private UserService userService;
@@ -124,18 +130,36 @@ public class QuestionBankController {
 
     /**
      * 根据 id 获取题库（封装类）
-     *
-     * @param id
-     * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse<QuestionBankVO> getQuestionBankVOById(long id, HttpServletRequest request) {
+    public BaseResponse<QuestionBankVO> getQuestionBankVOById(QuestionBankQueryRequest questionBankQueryRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(questionBankQueryRequest == null, ErrorCode.PARAMS_ERROR);
+        Long id = questionBankQueryRequest.getId();
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         QuestionBank questionBank = questionBankService.getById(id);
         ThrowUtils.throwIf(questionBank == null, ErrorCode.NOT_FOUND_ERROR);
+        // 查询题库封装类
+        QuestionBankVO questionBankVO = questionBankService.getQuestionBankVO(questionBank, request);
+        // 是否要关联查询题库下的题目列表
+        boolean needQueryQuestionList = questionBankQueryRequest.isNeedQueryQuestionList();
+        if (needQueryQuestionList) {
+            QuestionQueryRequest questionQueryRequest = new QuestionQueryRequest();
+            questionQueryRequest.setQuestionBankId(id);
+            // 可以按需支持更多的题目搜索参数，比如分页
+            questionQueryRequest.setPageSize(questionBankQueryRequest.getPageSize());
+            questionQueryRequest.setCurrent(questionBankQueryRequest.getCurrent());
+            Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
+            Page<QuestionVO> questionVOPage = questionService.getQuestionVOPage(questionPage, request);
+            questionBankVO.setQuestionPage(questionVOPage);
+        }
+
+        // todo 取消注释开启 HotKey（须确保 HotKey 依赖被打进 jar 包）
+//        // 设置本地缓存（如果不是热 key，这个方法不会设置缓存）
+//        JdHotKeyStore.smartSet(key, questionBankVO);
+
         // 获取封装类
-        return ResultUtils.success(questionBankService.getQuestionBankVO(questionBank, request));
+        return ResultUtils.success(questionBankVO);
     }
 
     /**
@@ -164,7 +188,7 @@ public class QuestionBankController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionBankVO>> listQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
-                                                               HttpServletRequest request) {
+                                                                       HttpServletRequest request) {
         long current = questionBankQueryRequest.getCurrent();
         long size = questionBankQueryRequest.getPageSize();
         // 限制爬虫
@@ -185,7 +209,7 @@ public class QuestionBankController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionBankVO>> listMyQuestionBankVOByPage(@RequestBody QuestionBankQueryRequest questionBankQueryRequest,
-                                                                 HttpServletRequest request) {
+                                                                         HttpServletRequest request) {
         ThrowUtils.throwIf(questionBankQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
