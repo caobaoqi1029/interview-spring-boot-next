@@ -7,8 +7,8 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
-import './index.css'
-import {menus} from "@/config/menu";
+import "./index.css";
+import { menus } from "@/config/menu";
 
 const SearchInput = () => {
     return (
@@ -44,9 +44,6 @@ interface Props {
 
 export default function BasicLayout({ children }: Props) {
     const pathname = usePathname();
-    if (typeof document === "undefined") {
-        return <div />;
-    }
     return (
         <div
             id="basicLayout"
@@ -89,25 +86,19 @@ export default function BasicLayout({ children }: Props) {
                     return [<SearchInput key="SearchInput" />, <GithubFilled key="GithubFilled" />];
                 }}
                 headerTitleRender={(logo, title, _) => {
-                    const defaultDom = (
+                    return (
                         <a>
                             {logo}
                             {title}
                         </a>
                     );
-                    if (typeof window === "undefined") return defaultDom;
-                    if (document.body.clientWidth < 1400) {
-                        return defaultDom;
-                    }
-                    if (_.isMobile) return defaultDom;
-                    return <>{defaultDom}</>;
                 }}
-                footerRender={(props) => {
+                footerRender={() => {
                     return <GlobalFooter />;
                 }}
                 onMenuHeaderClick={(e) => console.log(e)}
                 menuDataRender={() => {
-                    return menus
+                    return menus;
                 }}
                 menuItemRender={(item, dom) => (
                     <Link href={item.path || "/"} target={item.target}>

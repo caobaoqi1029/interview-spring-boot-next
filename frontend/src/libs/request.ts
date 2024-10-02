@@ -1,11 +1,10 @@
 import axios from "axios";
-
+// 创建 Axios 示例
 const myAxios = axios.create({
     baseURL: "http://localhost:8101",
     timeout: 10000,
     withCredentials: true,
 });
-
 // 创建请求拦截器
 myAxios.interceptors.request.use(
     function (config) {
@@ -17,7 +16,6 @@ myAxios.interceptors.request.use(
         return Promise.reject(error);
     },
 );
-
 // 创建响应拦截器
 myAxios.interceptors.response.use(
     // 2xx 响应触发
@@ -45,5 +43,4 @@ myAxios.interceptors.response.use(
         return Promise.reject(error);
     },
 );
-
 export default myAxios;

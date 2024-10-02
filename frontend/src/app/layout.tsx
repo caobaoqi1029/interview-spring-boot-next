@@ -1,5 +1,6 @@
+"use client";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import BasicLayout from "@/layouts/BasicLayout";
 import "./globals.css";
 
