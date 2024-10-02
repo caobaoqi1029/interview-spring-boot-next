@@ -140,7 +140,7 @@ PUT post_v1
 
 ```
 // 指定生成参数
-String packageName = "com.mcddhub.init";
+String packageName = "com.mcddhub.backend";
 String dataName = "用户评论";
 String dataKey = "userComment";
 String upperDataKey = "UserComment";

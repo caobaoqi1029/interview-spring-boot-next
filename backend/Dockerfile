@@ -1,4 +1,4 @@
-FROM maven:3.8.1-openjdk-17-slim AS builder
+FROM maven:3.8.1-openjdk-11-slim AS builder
 
 # Copy local code to the container image.
 WORKDIR /app
@@ -9,4 +9,4 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Run the web service on container startup.
-CMD ["java","-jar","/app/target/xxx.jar","--spring.profiles.active=prod"]
+CMD ["java","-jar","/app/target/backend.jar","--spring.profiles.active=prod"]
